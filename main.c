@@ -12,9 +12,9 @@ char *pMid=NULL;
 
 #ifdef __DEBUG__
 char prev[]={"abc"};
-//char mid[]={"abc"};
+char mid[]={"cab"};
 //char mid[]={"cba"};
-char mid[]={"bac"};
+//char mid[]={"bac"};
 #endif
 
 void help()
@@ -63,6 +63,55 @@ int buildtree(T_NODE** p,int pb,int pe,int mb,int me)
     return 0;
 }
 
+static int curId=0;
+static char buf[50]={0};
+
+static void prev_trave(T_NODE* p)
+{
+    if(p)
+    {
+        sprintf(&buf[curId++],"%c",p->id);
+        prev_trave(p->left);
+        prev_trave(p->right);
+    }
+}
+
+static void mid_trave(T_NODE* p)
+{
+    if(p)
+    {
+        prev_trave(p->left);
+        sprintf(&buf[curId++],"%c",p->id);
+        prev_trave(p->right);
+    }
+}
+
+bool calibration(T_NODE* head,char* prev,char* mid)
+{
+
+    if(!head)
+        return false;
+
+    curId=0;
+    memset(buf,0,50);
+    prev_trave(head);
+#ifdef __DEBUG__
+    printf("prev:%s\n",buf);
+#endif
+    if(strcmp(prev,prev))
+        return false;
+
+    curId=0;
+    memset(buf,0,50);
+    mid_trave(head);
+#ifdef __DEBUG__
+    printf("mid:%s\n",buf);
+#endif
+    if(strcmp(mid,buf))
+        return false;
+
+    return true;
+}
 
 int main(int argc,char* argv[])
 {
@@ -88,6 +137,11 @@ int main(int argc,char* argv[])
         else if(!strcmp(argv[1],"-nnull"))
         {
             type = UNSHOW_NULL;
+        }
+        else
+        {
+            help();
+            return 0;
         }
         pPrev=(char*)malloc(sizeof(strlen(argv[2])+1));
         memset(pPrev,0,(sizeof(strlen(argv[2])+1)));
@@ -118,7 +172,14 @@ int main(int argc,char* argv[])
         mid_end=strlen(mid)-1;
 #endif
     buildtree(&head,prev_begin,prev_end,mid_begin,mid_end);
-    drawtree_build_googleAPI_html(head,type,"binarytree_graphic.html");
+    if(!calibration(head,pPrev,pMid))
+    {
+        printf("FAIL!!!  can't build binary tree, please check \n");
+    }
+    else
+    {
+        drawtree_build_googleAPI_html(head,type,"binarytree_graphic.html");
+    }
 
     return 0;
 }

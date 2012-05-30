@@ -5,7 +5,7 @@
 #include "drawtree.h"
 
 
-void mid_trave(T_NODE* node,FILE* fp,T_NODE* parent,int lr,DRAW_TYPE type)
+static void mid_trave(T_NODE* node,FILE* fp,T_NODE* parent,int lr,DRAW_TYPE type)
 {
     char LR[]={"lr"};
 
