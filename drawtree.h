@@ -34,7 +34,7 @@
 </html>"
 
 typedef struct node{
-    int id;
+    char id;
 
     struct node* left;
     struct node* right;
